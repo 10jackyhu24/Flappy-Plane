@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta
+      name="description"
+      content="Skyline Ace：駕駛客機穿梭城市天際線，閃避摩天大樓、雷雲、敵機與 UFO。"
+    />
+    <meta name="theme-color" content="#09182f" />
+    <title>Skyline Ace — 城市飛行挑戰</title>
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%2307182e'/%3E%3Cpath d='M10 36 54 17 42 47l-11-8-8 9-1-13-12 1Z' fill='none' stroke='%238ffff3' stroke-width='3' stroke-linejoin='round'/%3E%3C/svg%3E"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="game-shell" aria-label="Skyline Ace 遊戲">
+      <canvas id="gameCanvas" aria-label="遊戲畫面"></canvas>
+
+      <div class="top-bar">
+        <a class="brand" href="./" aria-label="Skyline Ace 首頁">
+          <span class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 44 44" role="img">
+              <path d="M7 25.4 37 12l-8.2 20.4-7.1-5.6-4.9 6.1-.9-8.7L7 25.4Z" />
+              <path d="m16 24.1 5.6 2.7L37 12" />
+            </svg>
+          </span>
+          <span>
+            <strong>SKYLINE ACE</strong>
+            <small>URBAN FLIGHT CLUB</small>
+          </span>
+        </a>
+
+        <div class="hud" id="hud" aria-live="polite">
+          <div class="hud-item">
+            <span>SCORE</span>
+            <strong id="scoreValue">000</strong>
+          </div>
+          <i></i>
+          <div class="hud-item">
+            <span>BEST</span>
+            <strong id="bestValue">000</strong>
+          </div>
+        </div>
+
+        <div class="top-actions">
+          <button class="icon-button" id="pauseButton" type="button" aria-label="暫停遊戲" title="暫停（P）">
+            <svg class="pause-icon" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M7 5h3v14H7zm7 0h3v14h-3z" />
+            </svg>
+            <svg class="play-icon" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="m8 5 11 7-11 7V5z" />
+            </svg>
+          </button>
+          <button class="icon-button" id="soundButton" type="button" aria-label="關閉音效" title="音效">
+            <svg class="sound-on" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M4 9v6h4l5 4V5L8 9H4Zm12.2.1a4 4 0 0 1 0 5.8l1.4 1.4a6 6 0 0 0 0-8.6l-1.4 1.4Z" />
+            </svg>
+            <svg class="sound-off" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M4 9v6h4l5 4V5L8 9H4Zm12.2 1.6L14.8 12l1.4 1.4-1.4 1.4 1.4 1.4 1.4-1.4 1.4 1.4 1.4-1.4-1.4-1.4 1.4-1.4-1.4-1.4-1.4 1.4-1.4-1.4Z" />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <section class="intro-panel panel is-visible" id="introPanel" aria-labelledby="gameTitle">
+        <div class="eyebrow"><span></span> FLIGHT BRIEFING · 07:30</div>
+        <h1 id="gameTitle">穿越城市<br /><em>成為天際王牌</em></h1>
+        <p>控制你的客機保持高度，閃避高樓、獨立漂移的雷雲，以及迎面而來的敵機與 UFO。</p>
+
+        <div class="controls-guide">
+          <div>
+            <kbd>SPACE</kbd>
+            <span>按一下向上飛</span>
+          </div>
+          <div>
+            <span class="tap-icon" aria-hidden="true">
+              <svg viewBox="0 0 32 32">
+                <path d="M11 16V8a2 2 0 0 1 4 0v6-9a2 2 0 0 1 4 0v9-7a2 2 0 0 1 4 0v9-5a2 2 0 0 1 4 0v9c0 6-4 9-10 9h-1c-4 0-6-2-8-5l-3-5a2.2 2.2 0 0 1 3.7-2.4L11 19v-3Z" />
+              </svg>
+            </span>
+            <span>點擊／觸碰螢幕</span>
+          </div>
+        </div>
+
+        <button class="primary-button" id="startButton" type="button">
+          <span>開始飛行</span>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7" /></svg>
+        </button>
+        <span class="hint">別貼近地面，也別衝出航線</span>
+      </section>
+
+      <section class="result-panel panel" id="resultPanel" aria-labelledby="resultTitle">
+        <div class="result-badge" aria-hidden="true">
+          <svg viewBox="0 0 64 64">
+            <path d="M12 18h40v10c0 10-8 18-20 18S12 38 12 28V18Z" />
+            <path d="M20 46h24M26 46v7h12v-7M12 23H7v4c0 6 4 10 10 10M52 23h5v4c0 6-4 10-10 10" />
+          </svg>
+        </div>
+        <div class="eyebrow"><span></span> FLIGHT REPORT</div>
+        <h2 id="resultTitle">任務結束</h2>
+        <p id="resultMessage">差一點！下一次一定能飛得更遠。</p>
+        <div class="score-card">
+          <div><span>本次分數</span><strong id="finalScore">000</strong></div>
+          <i></i>
+          <div><span>最高紀錄</span><strong id="finalBest">000</strong></div>
+        </div>
+        <button class="primary-button" id="restartButton" type="button">
+          <span>再次起飛</span>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8 8 0 1 0-2 5.3M20 4v7h-7" /></svg>
+        </button>
+      </section>
+
+      <section class="pause-panel panel" id="pausePanel" aria-labelledby="pauseTitle">
+        <div class="eyebrow"><span></span> FLIGHT ON HOLD</div>
+        <h2 id="pauseTitle">飛行暫停</h2>
+        <p>休息一下，準備好後再繼續穿越天際線。</p>
+        <button class="primary-button" id="resumeButton" type="button">
+          <span>繼續飛行</span>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m8 5 11 7-11 7V5z" /></svg>
+        </button>
+      </section>
+
+      <div class="flight-tip" id="flightTip" aria-hidden="true">
+        <span>SPACE / 點擊</span> 拉升飛機
+      </div>
+
+      <div class="enemy-alert" id="enemyAlert" aria-hidden="true">
+        <span>!</span> 不明飛行物接近
+      </div>
+
+      <footer class="footer-note">
+        <span>ALT <b id="altitudeValue">--</b>M</span>
+        <i></i>
+        <span>SPD <b id="speedValue">--</b>KT</span>
+      </footer>
+    </main>
+
+    <script src="game.js"></script>
+  </body>
+</html>
